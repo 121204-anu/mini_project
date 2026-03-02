@@ -10,9 +10,6 @@ const devices = [
 
 window.onload = function () {
 
-    document.getElementById("apiKeyDisplay")
-        .innerText = firebase.app().options.apiKey;
-
     const container = document.getElementById("devices");
 
     devices.forEach((name, index) => {
@@ -21,7 +18,7 @@ window.onload = function () {
             <div class="light-card">
                 <h3>${name}</h3>
                 <button class="light-btn off"
-                    id="light${index}">
+                        id="light${index}">
                     OFF
                 </button>
             </div>
@@ -29,20 +26,27 @@ window.onload = function () {
 
         const btn = document.getElementById("light" + index);
 
-        // Click event
+        // CLICK EVENT
         btn.addEventListener("click", function () {
 
-            let newState = btn.classList.contains("off") ? 1 : 0;
+            let isOff = btn.classList.contains("off");
+            let newState = isOff ? 1 : 0;
+
+            console.log("Writing to Firebase:", newState);
 
             database.ref(`users/${DEVICE_ID}/devices/device${index}`)
-                .set(newState);
+                .set(newState)
+                .then(() => console.log("Write Success"))
+                .catch(err => console.error(err));
         });
 
-        // Realtime update
+        // REALTIME UPDATE
         database.ref(`users/${DEVICE_ID}/devices/device${index}`)
         .on("value", function (snapshot) {
 
             let state = snapshot.val();
+
+            console.log("Firebase Value:", state);
 
             if (state === 1) {
                 btn.classList.remove("off");
@@ -55,25 +59,4 @@ window.onload = function () {
             }
         });
     });
-
-    // Fan realtime
-    database.ref(`users/${DEVICE_ID}/fanSpeed`)
-    .on("value", function(snapshot){
-
-        const knob = document.getElementById("knob");
-        let speed = snapshot.val();
-
-        if(speed === 0) knob.style.transform = "rotate(-90deg)";
-        if(speed === 1) knob.style.transform = "rotate(-30deg)";
-        if(speed === 2) knob.style.transform = "rotate(30deg)";
-        if(speed === 3) knob.style.transform = "rotate(90deg)";
-    });
-
 };
-
-// Set fan speed
-function setSpeed(level) {
-
-    database.ref(`users/${DEVICE_ID}/fanSpeed`)
-        .set(level);
-}
