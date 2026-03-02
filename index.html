@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Automation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>HOME AUTOMATION</h1>
+
+<div class="container" id="devices"></div>
+
+<!-- 🔥 Firebase SDK (Version 8 – Simple & Stable) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyB1-AFdEYsRnK30rMSZtV0HeflRLGhrxOY",
+    authDomain: "home-automation-a854c.firebaseapp.com",
+    databaseURL: "https://home-automation-a854c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "home-automation-a854c",
+    storageBucket: "home-automation-a854c.firebasestorage.app",
+    messagingSenderId: "1076398156462",
+    appId: "1:1076398156462:web:0ebad07e77d29cd2aa1b3f"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
