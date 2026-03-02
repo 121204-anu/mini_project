@@ -1,10 +1,7 @@
-// 🔐 Permanent Device ID
 const DEVICE_ID = "ANURAG_HOME_001";
-
 const database = firebase.database();
 
-// Default device names
-const defaultNames = [
+const devices = [
     "LIGHT 1",
     "SOCKET 2",
     "SOCKET 3",
@@ -13,12 +10,14 @@ const defaultNames = [
     "SOCKET 6"
 ];
 
-// Wait until page loads
 window.onload = function () {
+
+    document.getElementById("apiKeyDisplay")
+        .innerText = firebase.app().options.apiKey;
 
     const container = document.getElementById("devices");
 
-    defaultNames.forEach((name, index) => {
+    devices.forEach((name, index) => {
 
         container.innerHTML += `
             <div class="card">
@@ -30,31 +29,39 @@ window.onload = function () {
             </div>
         `;
 
-        // Toggle event
         document.getElementById("toggle" + index)
             .addEventListener("change", function () {
-                updateDeviceState(index, this.checked ? 1 : 0);
+
+                let state = this.checked ? 1 : 0;
+
+                database.ref(`users/${DEVICE_ID}/devices/device${index}`)
+                    .set(state);
             });
 
-        // 🔄 Real-time listener
         database.ref(`users/${DEVICE_ID}/devices/device${index}`)
             .on("value", function (snapshot) {
                 let value = snapshot.val();
                 document.getElementById("toggle" + index).checked = (value === 1);
             });
     });
-};
 
+    const speedSlider = document.getElementById("speedControl");
+    const speedText = document.getElementById("speedValue");
 
-// 🔥 Update Firebase
-function updateDeviceState(deviceNumber, state) {
+    speedSlider.addEventListener("input", function () {
+        let speed = parseInt(this.value);
+        speedText.innerText = speed;
 
-    database.ref(`users/${DEVICE_ID}/devices/device${deviceNumber}`)
-        .set(state)
-        .then(() => {
-            console.log("Device " + deviceNumber + " Updated:", state);
-        })
-        .catch((error) => {
-            console.error("Firebase Error:", error);
+        database.ref(`users/${DEVICE_ID}/fanSpeed`)
+            .set(speed);
+    });
+
+    database.ref(`users/${DEVICE_ID}/fanSpeed`)
+        .on("value", function (snapshot) {
+            let value = snapshot.val();
+            if (value !== null) {
+                speedSlider.value = value;
+                speedText.innerText = value;
+            }
         });
-}
+};
