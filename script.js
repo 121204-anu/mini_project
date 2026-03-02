@@ -1,4 +1,10 @@
-let defaultNames = [
+// 🔐 Permanent Device ID
+const DEVICE_ID = "ANURAG_HOME_001";
+
+const database = firebase.database();
+
+// Default device names
+const defaultNames = [
     "LIGHT 1",
     "SOCKET 2",
     "SOCKET 3",
@@ -7,38 +13,46 @@ let defaultNames = [
     "SOCKET 6"
 ];
 
-let deviceNames = defaultNames;
-let deviceStates = [0,0,0,0,0,0];
+// Wait until page loads
+window.onload = function () {
 
-let container = document.getElementById("devices");
+    const container = document.getElementById("devices");
 
-deviceNames.forEach((name, index) => {
+    defaultNames.forEach((name, index) => {
 
-    container.innerHTML += `
-        <div class="card">
-            <h3>${name}</h3>
+        container.innerHTML += `
+            <div class="card">
+                <h3>${name}</h3>
+                <label class="switch">
+                    <input type="checkbox" id="toggle${index}">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        `;
 
-            <label class="switch">
-                <input type="checkbox" id="toggle${index}" 
-                       onchange="toggle(${index})">
-                <span class="slider"></span>
-            </label>
-        </div>
-    `;
-});
+        // Toggle event
+        document.getElementById("toggle" + index)
+            .addEventListener("change", function () {
+                updateDeviceState(index, this.checked ? 1 : 0);
+            });
 
-function toggle(num) {
+        // 🔄 Real-time listener
+        database.ref(`users/${DEVICE_ID}/devices/device${index}`)
+            .on("value", function (snapshot) {
+                let value = snapshot.val();
+                document.getElementById("toggle" + index).checked = (value === 1);
+            });
+    });
+};
 
-    let toggleBtn = document.getElementById("toggle" + num);
-    let state = toggleBtn.checked ? 1 : 0;
 
-    console.log("Device " + num + " State: " + state);
+// 🔥 Update Firebase
+function updateDeviceState(deviceNumber, state) {
 
-    // 🔥 Update Firebase
-    database.ref("devices/device" + num)
+    database.ref(`users/${DEVICE_ID}/devices/device${deviceNumber}`)
         .set(state)
         .then(() => {
-            console.log("Firebase Updated Successfully");
+            console.log("Device " + deviceNumber + " Updated:", state);
         })
         .catch((error) => {
             console.error("Firebase Error:", error);
