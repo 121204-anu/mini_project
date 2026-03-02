@@ -11,22 +11,33 @@
 
 <div class="container" id="devices"></div>
 
-<!-- Firebase SDK v8 -->
+<h2>FAN SPEED CONTROL</h2>
+<div class="card">
+    <input type="range" id="speedControl" min="0" max="100" value="0">
+    <p>Speed: <span id="speedValue">0</span>%</p>
+</div>
+
+<div class="apikey-box">
+    Firebase API Key:
+    <span id="apiKeyDisplay"></span>
+</div>
+
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-  var firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
+var firebaseConfig = {
+    apiKey: "AIzaSyB1-AFdEYsRnK30rMSZtV0HeflRLGhrxOY",
     authDomain: "home-automation-a854c.firebaseapp.com",
     databaseURL: "https://home-automation-a854c-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "home-automation-a854c",
     storageBucket: "home-automation-a854c.appspot.com",
     messagingSenderId: "1076398156462",
     appId: "1:1076398156462:web:0ebad07e77d29cd2aa1b3f"
-  };
+};
 
-  firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 </script>
 
 <script src="script.js"></script>
