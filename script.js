@@ -3,11 +3,9 @@ const database = firebase.database();
 
 const devices = [
     "LIGHT 1",
-    "SOCKET 2",
-    "SOCKET 3",
-    "LIGHT 4",
-    "SOCKET 5",
-    "SOCKET 6"
+    "LIGHT 2",
+    "LIGHT 3",
+    "LIGHT 4"
 ];
 
 window.onload = function () {
@@ -20,48 +18,62 @@ window.onload = function () {
     devices.forEach((name, index) => {
 
         container.innerHTML += `
-            <div class="card">
+            <div class="light-card">
                 <h3>${name}</h3>
-                <label class="switch">
-                    <input type="checkbox" id="toggle${index}">
-                    <span class="slider"></span>
-                </label>
+                <button class="light-btn off"
+                    id="light${index}">
+                    OFF
+                </button>
             </div>
         `;
 
-        document.getElementById("toggle" + index)
-            .addEventListener("change", function () {
+        const btn = document.getElementById("light" + index);
 
-                let state = this.checked ? 1 : 0;
+        // Click event
+        btn.addEventListener("click", function () {
 
-                database.ref(`users/${DEVICE_ID}/devices/device${index}`)
-                    .set(state);
-            });
+            let newState = btn.classList.contains("off") ? 1 : 0;
 
+            database.ref(`users/${DEVICE_ID}/devices/device${index}`)
+                .set(newState);
+        });
+
+        // Realtime update
         database.ref(`users/${DEVICE_ID}/devices/device${index}`)
-            .on("value", function (snapshot) {
-                let value = snapshot.val();
-                document.getElementById("toggle" + index).checked = (value === 1);
-            });
-    });
-
-    const speedSlider = document.getElementById("speedControl");
-    const speedText = document.getElementById("speedValue");
-
-    speedSlider.addEventListener("input", function () {
-        let speed = parseInt(this.value);
-        speedText.innerText = speed;
-
-        database.ref(`users/${DEVICE_ID}/fanSpeed`)
-            .set(speed);
-    });
-
-    database.ref(`users/${DEVICE_ID}/fanSpeed`)
         .on("value", function (snapshot) {
-            let value = snapshot.val();
-            if (value !== null) {
-                speedSlider.value = value;
-                speedText.innerText = value;
+
+            let state = snapshot.val();
+
+            if (state === 1) {
+                btn.classList.remove("off");
+                btn.classList.add("on");
+                btn.innerText = "ON";
+            } else {
+                btn.classList.remove("on");
+                btn.classList.add("off");
+                btn.innerText = "OFF";
             }
         });
+    });
+
+    // Fan realtime
+    database.ref(`users/${DEVICE_ID}/fanSpeed`)
+    .on("value", function(snapshot){
+
+        const knob = document.getElementById("knob");
+        let speed = snapshot.val();
+
+        if(speed === 0) knob.style.transform = "rotate(-90deg)";
+        if(speed === 1) knob.style.transform = "rotate(-30deg)";
+        if(speed === 2) knob.style.transform = "rotate(30deg)";
+        if(speed === 3) knob.style.transform = "rotate(90deg)";
+    });
+
 };
+
+// Set fan speed
+function setSpeed(level) {
+
+    database.ref(`users/${DEVICE_ID}/fanSpeed`)
+        .set(level);
+}
