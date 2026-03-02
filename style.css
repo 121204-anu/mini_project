@@ -14,7 +14,7 @@ body {
 
 .card {
     background: #111;
-    padding: 30px;
+    padding: 25px;
     border-radius: 12px;
 }
 
@@ -59,4 +59,13 @@ input:checked + .slider {
 
 input:checked + .slider:before {
     transform: translateX(28px);
+}
+
+input[type=range] {
+    width: 80%;
+}
+
+.apikey-box {
+    margin-top: 20px;
+    color: #00ff00;
 }
