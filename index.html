@@ -4,17 +4,31 @@
     <title>Home Automation</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<h1>HOME AUTOMATION</h1>
+<h1 class="title">HOME AUTOMATION</h1>
 
-<div class="container" id="devices"></div>
+<div class="dashboard">
 
-<h2>FAN SPEED CONTROL</h2>
-<div class="card">
-    <input type="range" id="speedControl" min="0" max="100" value="0">
-    <p>Speed: <span id="speedValue">0</span>%</p>
+    <!-- LEFT SIDE LIGHTS -->
+    <div class="lights" id="devices"></div>
+
+    <!-- RIGHT SIDE FAN -->
+    <div class="fan-panel">
+        <h2>FAN CONTROL</h2>
+
+        <div class="knob" id="knob">
+            <div class="indicator"></div>
+        </div>
+
+        <div class="fan-buttons">
+            <button class="off-btn" onclick="setSpeed(0)">OFF</button>
+            <button onclick="setSpeed(1)">1</button>
+            <button onclick="setSpeed(2)">2</button>
+            <button onclick="setSpeed(3)">3</button>
+        </div>
+    </div>
+
 </div>
 
 <div class="apikey-box">
@@ -22,13 +36,13 @@
     <span id="apiKeyDisplay"></span>
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
 var firebaseConfig = {
-    apiKey: "AIzaSyB1-AFdEYsRnK30rMSZtV0HeflRLGhrxOY",
+    apiKey: "YOUR_API_KEY_HERE",
     authDomain: "home-automation-a854c.firebaseapp.com",
     databaseURL: "https://home-automation-a854c-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "home-automation-a854c",
